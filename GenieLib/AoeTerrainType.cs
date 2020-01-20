@@ -8,7 +8,9 @@
         Beach = 2,
         Shallows = 4,
         Desert = 6,
+        Forest = 10,
         PalmDesert = 13,
+        PineForest = 19,
         Jungle = 20,
         DeepWater = 22,
 

@@ -38,7 +38,9 @@ namespace ScenarioConverter
             AddTerrainType(AoeTerrainType.Beach, TerrainType.Z_Sand);
             AddTerrainType(AoeTerrainType.Shallows, TerrainType.N_Snow);
             AddTerrainType(AoeTerrainType.Desert, TerrainType.B_Desert);
+            AddTerrainType(AoeTerrainType.Forest, TerrainType.L_Grass);
             AddTerrainType(AoeTerrainType.PalmDesert, TerrainType.B_Desert);
+            AddTerrainType(AoeTerrainType.PineForest, TerrainType.L_Grass);
             AddTerrainType(AoeTerrainType.Jungle, TerrainType.L_Grass);
             AddTerrainType(AoeTerrainType.DeepWater, TerrainType.I_DarkIce);
 
@@ -66,14 +68,20 @@ namespace ScenarioConverter
                     var tileType = tile.cnst;
 
                     var mapTile = new MapTile();
-                    mapTile.Texture = _terrainTypes[tileType];
-                    mapTile.CliffLevel = 2;
+                    mapTiles[x, y] = mapTile;
+
                     if (rnd.Next(4) == 0)
                     {
                         mapTile.Variation = rnd.Next(16);
                     }
 
-                    mapTiles[x, y] = mapTile;
+                    if (!_terrainTypes.TryGetValue(tileType, out var terrainTypeIndex))
+                    {
+                        terrainTypeIndex = _terrainTypes[AoeTerrainType.Undefined];
+                    }
+
+                    mapTile.Texture = terrainTypeIndex;
+                    mapTile.CliffLevel = 2;
                 }
             }
 

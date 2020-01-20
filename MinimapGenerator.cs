@@ -18,7 +18,9 @@ namespace ScenarioConverter
             _colors.Add(AoeTerrainType.Beach, Color.FromArgb(unchecked((int)0xFFE1E372)));
             _colors.Add(AoeTerrainType.Shallows, Color.FromArgb(unchecked((int)0xFF5492B0)));
             _colors.Add(AoeTerrainType.Desert, Color.FromArgb(unchecked((int)0xFFEE9B5E)));
+            _colors.Add(AoeTerrainType.Forest, Color.FromArgb(unchecked((int)0xFF157615)));
             _colors.Add(AoeTerrainType.PalmDesert, Color.FromArgb(unchecked((int)0xFFFFE094)));
+            _colors.Add(AoeTerrainType.PineForest, Color.FromArgb(unchecked((int)0xFF208020)));
             _colors.Add(AoeTerrainType.Jungle, Color.FromArgb(unchecked((int)0xFF357615)));
             _colors.Add(AoeTerrainType.DeepWater, Color.FromArgb(unchecked((int)0xFF003587)));
         }
