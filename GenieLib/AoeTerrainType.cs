@@ -10,7 +10,7 @@
         Desert = 6,
         PalmDesert = 13,
         Jungle = 20,
-        DeepWater = 20,
+        DeepWater = 22,
 
         Undefined = 255,
     }
