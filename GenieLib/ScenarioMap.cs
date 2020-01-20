@@ -55,21 +55,23 @@ namespace GenieLib
 
             padding = new RectangleMargins((int)padleft, (int)padright, (int)padbottom, (int)padtop);
 
+            padright = width - padright;
+            padtop = height - padtop;
+
             for (uint x = 0; x < width; x++)
             {
                 for (uint y = 0; y < height; y++)
                 {
-                    var tile = map.terrain[x, y];
                     if (x < padleft || x >= padright || y < padbottom || y >= padtop)
                     {
-                        tile.cnst = AoeTerrainType.Undefined;
-                        tile.elev = 1;
+                        map.terrain[x, y].cnst = AoeTerrainType.Undefined;
+                        map.terrain[x, y].elev = 1;
                     }
                     else
                     {
                         var originalTile = terrain[x - padleft, y - padbottom];
-                        tile.cnst = originalTile.cnst;
-                        tile.elev = originalTile.elev;
+                        map.terrain[x, y].cnst = originalTile.cnst;
+                        map.terrain[x, y].elev = originalTile.elev;
                     }
                 }
             }
@@ -93,10 +95,8 @@ namespace GenieLib
             {
                 for (uint y = 0; y < height; y++)
                 {
-                    var tile = terrain[x, y];
-
-                    tile.cnst = (AoeTerrainType)reader.ReadByte();
-                    tile.elev = reader.ReadByte();
+                    terrain[x, y].cnst = (AoeTerrainType)reader.ReadByte();
+                    terrain[x, y].elev = reader.ReadByte();
                     var unk = reader.ReadByte(); // always 0?
                 }
             }
