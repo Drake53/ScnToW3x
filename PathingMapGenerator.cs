@@ -33,9 +33,9 @@ namespace ScenarioConverter
             var height = h * 4;
             var pathTiles = new PathingType[width, height];
 
-            for (uint x = 0; x < width; x++)
+            for (uint x = 0; x < w; x++)
             {
-                for (uint y = 0; y < height; y++)
+                for (uint y = 0; y < h; y++)
                 {
                     var tileType = map.terrain[x, y].cnst;
                     if (!_pathingTypes.TryGetValue(tileType, out var pathingType))
