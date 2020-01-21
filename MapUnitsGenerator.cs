@@ -33,6 +33,10 @@ namespace ScenarioConverter
                     {
                         owner = IsHostile(unitType) ? 26 : 27;
                     }
+                    else
+                    {
+                        owner--;
+                    }
 
                     if (TryConvertType(unitType, out var convertedType))
                     {
