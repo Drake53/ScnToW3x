@@ -82,6 +82,8 @@ namespace ScenarioConverter
 
                     mapTile.Texture = terrainTypeIndex;
                     mapTile.CliffLevel = 2;
+                    // todo: mapTile.IsWater
+                    mapTile.Height = tile.elev * 0.25f;
                 }
             }
 
