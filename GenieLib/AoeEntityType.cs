@@ -92,7 +92,7 @@
         Juggernaught = 277,
         BallistaTower = 278,
         Helepolis = 279,
-        HeavyCatapult,
+        HeavyCatapult = 280,
         HeavyHorseArcher = 281,
         Legion = 282,
         Cataphract = 283,
