@@ -15,6 +15,7 @@ namespace GenieLib
         public readonly float SubVersion;
         public readonly int PlayerCount;
         public readonly string ScenarioName;
+        public readonly ImmutableArray<string> Messages;
 
         public readonly PlayerSlotData[] PlayerData;
         public readonly ScenarioMap Map;
@@ -107,6 +108,8 @@ namespace GenieLib
             {
                 cinem[i] = Encoding.ASCII.GetString(reader.ReadBytes(reader.ReadUInt16()));
             }
+
+            Messages = messages.ToImmutableArray();
 
             // bitmap
             var bitmap = reader.ReadInt32();

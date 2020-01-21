@@ -17,7 +17,7 @@ namespace ScenarioConverter
             _pathingTypes = new Dictionary<AoeTerrainType, PathingType>();
             _pathingTypes.Add(AoeTerrainType.Grass, PathingType.Water);
             _pathingTypes.Add(AoeTerrainType.Water, PathingType.Walk | PathingType.Build);
-            _pathingTypes.Add(AoeTerrainType.Beach, 0);
+            _pathingTypes.Add(AoeTerrainType.Beach, PathingType.Build);
             _pathingTypes.Add(AoeTerrainType.Shallows, PathingType.Build);
             _pathingTypes.Add(AoeTerrainType.Desert, PathingType.Water);
             _pathingTypes.Add(AoeTerrainType.PalmDesert, PathingType.Water);

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-using War3Net.Build;
+using War3Net.Build.Common;
 
 namespace GenieLib
 {

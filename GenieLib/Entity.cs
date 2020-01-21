@@ -30,5 +30,10 @@
         public byte Status => _status;
 
         public uint CreationNumber => _identifier;
+
+        public override string ToString()
+        {
+            return $"{_type} ({_x}, {_y})";
+        }
     }
 }
