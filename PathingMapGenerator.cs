@@ -20,7 +20,9 @@ namespace ScenarioConverter
             _pathingTypes.Add(AoeTerrainType.Beach, PathingType.Build);
             _pathingTypes.Add(AoeTerrainType.Shallows, PathingType.Build);
             _pathingTypes.Add(AoeTerrainType.Desert, PathingType.Water);
+            _pathingTypes.Add(AoeTerrainType.Forest, PathingType.Water);
             _pathingTypes.Add(AoeTerrainType.PalmDesert, PathingType.Water);
+            _pathingTypes.Add(AoeTerrainType.PineForest, PathingType.Water);
             _pathingTypes.Add(AoeTerrainType.Jungle, PathingType.Water);
             _pathingTypes.Add(AoeTerrainType.DeepWater, PathingType.Walk | PathingType.Build);
         }
