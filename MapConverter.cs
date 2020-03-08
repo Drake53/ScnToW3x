@@ -52,19 +52,18 @@ namespace ScenarioConverter
             var tga = TGASharpLib.TGA.FromBitmap(scaledBitmap, true);
             tga.Save(Path.Combine(outputFolder, "war3mapMap.tga"));
 
-            mapEnvironment.SerializeTo(File.Create(Path.Combine(outputFolder, MapEnvironment.FileName)));
-            PathingMapGenerator.Generate(expandedMap).SerializeTo(File.Create(Path.Combine(outputFolder, PathingMap.FileName)));
-
-            MapDoodadsGenerator.Generate(scenario).SerializeTo(File.Create(Path.Combine(outputFolder, MapDoodads.FileName)));
-            MapUnitsGenerator.Generate(scenario).SerializeTo(File.Create(Path.Combine(outputFolder, MapUnits.FileName)));
-
             var mapInfo = MapInfoGenerator.Generate(scenario, padding);
             mapInfo.SerializeTo(File.Create(Path.Combine(outputFolder, MapInfo.FileName)));
 
-            using (var menuMinimapStream = File.Create(Path.Combine(outputFolder, "war3map.mmp")))
-            {
-                MenuMinimapGenerator.Generate(mapInfo, map.width, map.height, padding).CopyTo(menuMinimapStream);
-            }
+            mapEnvironment.SerializeTo(File.Create(Path.Combine(outputFolder, MapEnvironment.FileName)));
+            PathingMapGenerator.Generate(expandedMap).SerializeTo(File.Create(Path.Combine(outputFolder, PathingMap.FileName)));
+
+            var mapUnits = MapUnitsGenerator.Generate(mapInfo, scenario);
+            mapUnits.SerializeTo(File.Create(Path.Combine(outputFolder, MapUnits.FileName)));
+            MapDoodadsGenerator.Generate(scenario).SerializeTo(File.Create(Path.Combine(outputFolder, MapDoodads.FileName)));
+
+            var mapIcons = new MapPreviewIcons(mapInfo, mapEnvironment, mapUnits);
+            mapIcons.SerializeTo(File.Create(Path.Combine(outputFolder, MapPreviewIcons.FileName)));
         }
     }
 }

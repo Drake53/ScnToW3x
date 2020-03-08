@@ -2,6 +2,7 @@
 
 using GenieLib;
 
+using War3Net.Build.Info;
 using War3Net.Build.Widget;
 
 namespace ScenarioConverter
@@ -120,9 +121,18 @@ namespace ScenarioConverter
             _unitTypes.Add(AoeEntityType.BeachArticles, "e385");
         }
 
-        public static MapUnits Generate(Scenario scenario)
+        public static MapUnits Generate(MapInfo mapInfo, Scenario scenario)
         {
             var units = new List<MapUnitData>();
+
+            var playerCount = mapInfo.PlayerDataCount;
+            for (var i = 0; i < playerCount; i++)
+            {
+                var data = mapInfo.GetPlayerData(i);
+                var unit = new MapUnitData(UnpackString("sloc"), data.StartPosition.X, data.StartPosition.Y, 0f, 1f, data.PlayerNumber, i);
+                units.Add(unit);
+            }
+
             foreach (var pair in scenario.Entities)
             {
                 foreach (var entity in pair.Value)
@@ -145,7 +155,7 @@ namespace ScenarioConverter
                             throw new System.Exception($"{unitType}");
                         }
 
-                        var unit = new MapUnitData(UnpackString(convertedType), entity.X * 128, entity.Y * 128, entity.Rotation * 16f, 1f, owner, (int)entity.CreationNumber);
+                        var unit = new MapUnitData(UnpackString(convertedType), entity.X * 128, entity.Y * 128, entity.Rotation * 16f, 1f, owner, (int)entity.CreationNumber + playerCount);
                         units.Add(unit);
                     }
                     /*else if (!System.Enum.IsDefined(typeof(AoeEntityType), unitType))
