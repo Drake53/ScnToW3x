@@ -4,6 +4,11 @@ using System.Drawing;
 
 using GenieLib;
 
+using War3Net.Build.Environment;
+using War3Net.Build.Info;
+using War3Net.Build.Providers;
+using War3Net.Build.Widget;
+
 namespace ScenarioConverter
 {
     public static class MinimapGenerator
@@ -45,6 +50,52 @@ namespace ScenarioConverter
             }
 
             return bitmap;
+        }
+
+        public static MapPreviewIcons GenerateIcons(MapInfo info, MapEnvironment environment, MapUnits units)
+        {
+            var padding = info.CameraBoundsComplements;
+
+            var minX = environment.Left + (128 * padding.Left);
+            var width = environment.Right - (128 * padding.Right) - minX;
+
+            var minY = environment.Bottom + (128 * padding.Bottom);
+            var height = environment.Top - (128 * padding.Top) - minY;
+
+            var ratio = width / height;
+            var sizeX = 255 * (ratio > 1 ? 1 : ratio);
+            var sizeY = 255 * (ratio > 1 ? 1 / ratio : 1);
+
+            var lowerX = 1 + (0.5f * (255 - sizeX));
+            var upperY = 1 + (0.5f * (255 + sizeY));
+
+            sizeX /= width;
+            sizeY /= height;
+
+            var icons = new List<PreviewIcon>();
+            if (units != null)
+            {
+                foreach (var unit in units.Units)
+                {
+                    if (MapPreviewIconProvider.TryGetIcon(unit.TypeId, unit.OwnerId, out var iconType, out var iconColor))
+                    {
+                        icons.Add(new PreviewIcon()
+                        {
+                            IconType = iconType,
+                            // X = (byte)(lowerX + (sizeX * (unit.Position.X - minX))),
+                            // Y = (byte)(upperY - (sizeY * (unit.Position.Y - minY))),
+                            X = (byte)(0.0f + lowerX + (sizeX * (unit.Position.X - minX))),
+                            Y = (byte)(0.5f + upperY - (sizeY * (unit.Position.Y - minY))),
+                            Color = iconColor,
+                        });
+                    }
+                }
+            }
+
+            return new MapPreviewIcons(MapPreviewIconsFormatVersion.Normal)
+            {
+                Icons = icons,
+            };
         }
     }
 }

@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Numerics;
 
 using GenieLib;
 
 using War3Net.Build.Info;
 using War3Net.Build.Widget;
+using War3Net.Common.Extensions;
 
 namespace ScenarioConverter
 {
@@ -123,14 +126,22 @@ namespace ScenarioConverter
 
         public static MapUnits Generate(MapInfo mapInfo, Scenario scenario)
         {
-            var units = new List<MapUnitData>();
+            var units = new List<UnitData>();
 
-            var playerCount = mapInfo.PlayerDataCount;
+            var playerCount = mapInfo.Players.Count;
             for (var i = 0; i < playerCount; i++)
             {
-                var data = mapInfo.GetPlayerData(i);
-                var unit = new MapUnitData(UnpackString("sloc"), data.StartPosition.X, data.StartPosition.Y, 0f, 1f, data.PlayerNumber, i);
-                units.Add(unit);
+                units.Add(new UnitData
+                {
+                    TypeId = "sloc".FromRawcode(),
+                    Position = new Vector3(mapInfo.Players[i].StartPosition, 0f),
+                    Rotation = 0f,
+                    Scale = Vector3.One,
+                    OwnerId = mapInfo.Players[i].Id,
+                    CreationNumber = i,
+
+                    HeroLevel = 1,
+                });
             }
 
             foreach (var pair in scenario.Entities)
@@ -152,11 +163,20 @@ namespace ScenarioConverter
                     {
                         if (convertedType.Length != 4)
                         {
-                            throw new System.Exception($"{unitType}");
+                            throw new Exception($"{unitType}");
                         }
 
-                        var unit = new MapUnitData(UnpackString(convertedType), entity.X * 128, entity.Y * 128, entity.Rotation * 16f, 1f, owner, (int)entity.CreationNumber + playerCount);
-                        units.Add(unit);
+                        units.Add(new UnitData
+                        {
+                            TypeId = convertedType.FromRawcode(),
+                            Position = 128f * new Vector3(entity.X, entity.Y, 0f),
+                            Rotation = entity.Rotation * 16f,
+                            Scale = Vector3.One,
+                            OwnerId = owner,
+                            CreationNumber = (int)entity.CreationNumber + playerCount,
+
+                            HeroLevel = 1,
+                        });
                     }
                     /*else if (!System.Enum.IsDefined(typeof(AoeEntityType), unitType))
                     {
@@ -165,7 +185,10 @@ namespace ScenarioConverter
                 }
             }
 
-            return new MapUnits(units.ToArray());
+            return new MapUnits(MapWidgetsFormatVersion.TFT, MapWidgetsSubVersion.V11, false)
+            {
+                Units = units,
+            };
         }
 
         private static bool IsHostile(AoeEntityType unitType)

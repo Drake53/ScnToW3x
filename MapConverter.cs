@@ -5,6 +5,7 @@ using System.IO;
 using GenieLib;
 
 using War3Net.Build.Environment;
+using War3Net.Build.Extensions;
 using War3Net.Build.Info;
 using War3Net.Build.Widget;
 
@@ -42,10 +43,7 @@ namespace ScenarioConverter
             mapEnvironment.Left = padding.Left * -128;
             mapEnvironment.Bottom = padding.Bottom * -128;
 
-            if (!Directory.Exists(outputFolder))
-            {
-                Directory.CreateDirectory(outputFolder);
-            }
+            Directory.CreateDirectory(outputFolder);
 
             minimap.Save(Path.Combine(outputFolder, "minimap.png"));
 
@@ -53,17 +51,33 @@ namespace ScenarioConverter
             tga.Save(Path.Combine(outputFolder, "war3mapMap.tga"));
 
             var mapInfo = MapInfoGenerator.Generate(scenario, padding);
-            mapInfo.SerializeTo(File.Create(Path.Combine(outputFolder, MapInfo.FileName)));
+            using var mapInfoStream = File.Create(Path.Combine(outputFolder, MapInfo.FileName));
+            using var mapInfoWriter = new BinaryWriter(mapInfoStream);
+            mapInfoWriter.Write(mapInfo);
 
-            mapEnvironment.SerializeTo(File.Create(Path.Combine(outputFolder, MapEnvironment.FileName)));
-            PathingMapGenerator.Generate(expandedMap).SerializeTo(File.Create(Path.Combine(outputFolder, PathingMap.FileName)));
+            using var mapEnvironmentStream = File.Create(Path.Combine(outputFolder, MapEnvironment.FileName));
+            using var mapEnvironmentWriter = new BinaryWriter(mapEnvironmentStream);
+            mapEnvironmentWriter.Write(mapEnvironment);
+
+            var mapPathingMap = MapPathingMapGenerator.Generate(expandedMap);
+            using var mapPathingMapStream = File.Create(Path.Combine(outputFolder, MapPathingMap.FileName));
+            using var mapPathingMapWriter = new BinaryWriter(mapPathingMapStream);
+            mapPathingMapWriter.Write(mapPathingMap);
 
             var mapUnits = MapUnitsGenerator.Generate(mapInfo, scenario);
-            mapUnits.SerializeTo(File.Create(Path.Combine(outputFolder, MapUnits.FileName)));
-            MapDoodadsGenerator.Generate(scenario).SerializeTo(File.Create(Path.Combine(outputFolder, MapDoodads.FileName)));
+            using var mapUnitsStream = File.Create(Path.Combine(outputFolder, MapUnits.FileName));
+            using var mapUnitsWriter = new BinaryWriter(mapUnitsStream);
+            mapUnitsWriter.Write(mapUnits);
 
-            var mapIcons = new MapPreviewIcons(mapInfo, mapEnvironment, mapUnits);
-            mapIcons.SerializeTo(File.Create(Path.Combine(outputFolder, MapPreviewIcons.FileName)));
+            var mapDoodads = MapDoodadsGenerator.Generate(scenario);
+            using var mapDoodadsStream = File.Create(Path.Combine(outputFolder, MapDoodads.FileName));
+            using var mapDoodadsWriter = new BinaryWriter(mapDoodadsStream);
+            mapDoodadsWriter.Write(mapDoodads);
+
+            var mapIcons = MinimapGenerator.GenerateIcons(mapInfo, mapEnvironment, mapUnits);
+            using var mapIconsStream = File.Create(Path.Combine(outputFolder, MapPreviewIcons.FileName));
+            using var mapIconsWriter = new BinaryWriter(mapIconsStream);
+            mapIconsWriter.Write(mapIcons);
         }
     }
 }

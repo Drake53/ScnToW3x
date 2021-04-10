@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using GenieLib;
 
@@ -6,13 +8,13 @@ using War3Net.Build.Environment;
 
 namespace ScenarioConverter
 {
-    public static class PathingMapGenerator
+    public static class MapPathingMapGenerator
     {
         private const PathingType PaddedPathingType = PathingType.Walk | PathingType.Fly | PathingType.Build | PathingType.Water;
 
         private static readonly Dictionary<AoeTerrainType, PathingType> _pathingTypes;
 
-        static PathingMapGenerator()
+        static MapPathingMapGenerator()
         {
             _pathingTypes = new Dictionary<AoeTerrainType, PathingType>();
             _pathingTypes.Add(AoeTerrainType.Grass, PathingType.Water);
@@ -27,7 +29,7 @@ namespace ScenarioConverter
             _pathingTypes.Add(AoeTerrainType.DeepWater, PathingType.Walk | PathingType.Build);
         }
 
-        public static PathingMap Generate(ScenarioMap map)
+        public static MapPathingMap Generate(ScenarioMap map)
         {
             var w = map.width - 1;
             var h = map.height - 1;
@@ -55,7 +57,15 @@ namespace ScenarioConverter
                 }
             }
 
-            return new PathingMap(pathTiles);
+            var tiles = new PathingType[width * height];
+            Buffer.BlockCopy(pathTiles, 0, tiles, 0, (int)(width * height) * sizeof(PathingType));
+
+            return new MapPathingMap(MapPathingMapFormatVersion.Normal)
+            {
+                Width = width,
+                Height = height,
+                Cells = tiles.ToList(),
+            };
         }
     }
 }

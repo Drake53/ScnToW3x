@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using GenieLib;
 
 using War3Net.Build.Common;
 using War3Net.Build.Environment;
+using War3Net.Build.Providers;
 
 namespace ScenarioConverter
 {
@@ -51,12 +53,7 @@ namespace ScenarioConverter
         {
             var width = (int)map.width;
             var height = (int)map.height;
-            var mapTiles = new MapTile[map.width, map.height];
-
-            var paddingMapTile = new MapTile();
-            paddingMapTile.Texture = _terrainTypes[AoeTerrainType.Undefined];
-            paddingMapTile.CliffLevel = 2;
-            paddingMapTile.IsEdgeTile = true;
+            var mapTiles = new TerrainTile[map.width, map.height];
 
             var rnd = new Random();
 
@@ -67,7 +64,7 @@ namespace ScenarioConverter
                     var tile = map.terrain[x, y];
                     var tileType = tile.cnst;
 
-                    var mapTile = new MapTile();
+                    var mapTile = new TerrainTile();
                     mapTiles[x, y] = mapTile;
 
                     if (rnd.Next(4) == 0)
@@ -82,12 +79,51 @@ namespace ScenarioConverter
 
                     mapTile.Texture = terrainTypeIndex;
                     mapTile.CliffLevel = 2;
-                    // todo: mapTile.IsWater
                     mapTile.Height = tile.elev * 0.25f;
+
+                    mapTile.WaterHeight = mapTile.Height + 0.6f;
+                    mapTile.IsWater = true;
+
+                    if (tileType == AoeTerrainType.Beach)
+                    {
+                        mapTile.Height -= 0.2f;
+                    }
+
+                    if (tileType == AoeTerrainType.Shallows)
+                    {
+                        mapTile.Height -= 0.4f;
+                    }
+
+                    if (tileType == AoeTerrainType.Water)
+                    {
+                        mapTile.Height -= 0.6f;
+                    }
+
+                    if (tileType == AoeTerrainType.DeepWater)
+                    {
+                        mapTile.Height -= 0.8f;
+                    }
                 }
             }
 
-            return new MapEnvironment(Tileset.LordaeronSummer, _tileset, mapTiles);
+            var terrainTiles = new TerrainTile[width * height];
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    terrainTiles[x + y * width] = mapTiles[x, y];
+                }
+            }
+
+            return new MapEnvironment(MapEnvironmentFormatVersion.Normal)
+            {
+                TerrainTiles = terrainTiles.ToList(),
+                Tileset = Tileset.LordaeronSummer,
+                TerrainTypes = _tileset,
+                CliffTypes = TerrainTypeProvider.GetCliffTypes(Tileset.LordaeronSummer).ToList(),
+                Width = (uint)(width - 1),
+                Height = (uint)(height - 1),
+            };
         }
     }
 }
