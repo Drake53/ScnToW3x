@@ -35,7 +35,7 @@ namespace ScenarioConverter
             var h = map.height - 1;
             var width = w * 4;
             var height = h * 4;
-            var pathTiles = new PathingType[width, height];
+            var pathTiles = new PathingType[height, width];
 
             for (uint x = 0; x < w; x++)
             {
@@ -51,7 +51,7 @@ namespace ScenarioConverter
                     {
                         for (var j = (y == 0 ? 2 : 0); j < (y == h ? 2 : 4); j++)
                         {
-                            pathTiles[4 * x + i - 2, 4 * y + j - 2] = pathingType;
+                            pathTiles[4 * y + j - 2, 4 * x + i - 2] = pathingType;
                         }
                     }
                 }
