@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 
 using GenieLib;
 
+using War3Net.Build;
 using War3Net.Build.Common;
 using War3Net.Build.Extensions;
 using War3Net.Build.Info;
@@ -19,14 +21,36 @@ namespace ScenarioConverter
             // var mapInfo = MapInfo.Default;
             var mapInfo = new MapInfo(MapInfoFormatVersion.Lua)
             {
+                MapVersion = 1,
                 EditorVersion = 6072,
                 GameVersion = GamePatch.v1_31_1.ToVersion(),
 
-                CameraBounds = new Quadrilateral(0, map.width * 128, map.height * 128, 0),
-                CameraBoundsComplements = padding,
-
                 MapName = scenario.ScenarioName,
                 RecommendedPlayers = scenario.PlayerCount.ToString(),
+
+                CameraBounds = new Quadrilateral(0, map.width * 128, map.height * 128, 0),
+                CameraBoundsComplements = padding,
+                PlayableMapAreaWidth = (int)map.width,
+                PlayableMapAreaHeight = (int)map.height,
+
+                MapFlags = MapFlags.UseItemClassificationSystem | MapFlags.HasMapPropertiesMenuBeenOpened | MapFlags.MeleeMap,
+
+                Tileset = Tileset.LordaeronSummer,
+
+                LoadingScreenBackgroundNumber = -1,
+
+                GameDataSet = GameDataSet.Unset,
+
+                FogStyle = FogStyle.Linear,
+                FogStartZ = 3000f,
+                FogEndZ = 5000f,
+                FogDensity = 0.5f,
+                FogColor = Color.Black,
+
+                GlobalWeather = WeatherType.None,
+                WaterTintingColor = Color.White,
+
+                ScriptLanguage = ScriptLanguage.Lua,
             };
 
             const string NamePrefix = "MULTIPLAYER ";
@@ -49,8 +73,8 @@ namespace ScenarioConverter
             // TODO: escape \r \n chars
             // info.MapDescription = scenario.Messages[0];
 
-            mapInfo.MapFlags |= MapFlags.MeleeMap;
-            mapInfo.MapFlags &= ~(MapFlags.UseCustomForces | MapFlags.ShowWaterWavesOnCliffShores | MapFlags.ShowWaterWavesOnRollingShores | MapFlags.MaskedAreasArePartiallyVisible);
+            //mapInfo.MapFlags |= MapFlags.MeleeMap;
+            //mapInfo.MapFlags &= ~(MapFlags.UseCustomForces | MapFlags.ShowWaterWavesOnCliffShores | MapFlags.ShowWaterWavesOnRollingShores | MapFlags.MaskedAreasArePartiallyVisible);
 
             var players = new PlayerData[scenario.PlayerCount];
             for (var i = 0; i < scenario.PlayerCount; i++)
