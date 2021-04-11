@@ -49,11 +49,16 @@ namespace ScenarioConverter
             AddTerrainType(AoeTerrainType.Undefined, TerrainType.O_Abyss);
         }
 
-        public static MapEnvironment Generate(ScenarioMap map)
+        public static MapEnvironment Generate(ScenarioMap map, RectangleMargins padding)
         {
             var width = (int)map.width;
             var height = (int)map.height;
             var mapTiles = new TerrainTile[map.width, map.height];
+
+            var leftEdge = padding.Left;
+            var bottomEdge = padding.Bottom;
+            var rightEdge = width - padding.Right;
+            var topEdge = height - padding.Top;
 
             var rnd = new Random();
 
@@ -103,6 +108,11 @@ namespace ScenarioConverter
                     {
                         mapTile.Height -= 0.8f;
                     }
+
+                    if (x < leftEdge || y < bottomEdge || x >= rightEdge || y >= topEdge)
+                    {
+                        mapTile.IsEdgeTile = true;
+                    }
                 }
             }
 
@@ -123,6 +133,8 @@ namespace ScenarioConverter
                 CliffTypes = TerrainTypeProvider.GetCliffTypes(Tileset.LordaeronSummer).ToList(),
                 Width = (uint)(width - 1),
                 Height = (uint)(height - 1),
+                Left = padding.Left * -128,
+                Bottom = padding.Bottom * -128,
             };
         }
     }

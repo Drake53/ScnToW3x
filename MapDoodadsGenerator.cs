@@ -4,6 +4,7 @@ using System.Numerics;
 
 using GenieLib;
 
+using War3Net.Build.Common;
 using War3Net.Build.Widget;
 using War3Net.Common.Extensions;
 
@@ -24,9 +25,8 @@ namespace ScenarioConverter
             };
         }
 
-        public static MapDoodads Generate(Scenario scenario)
+        public static MapDoodads Generate(ScenarioMap map, RectangleMargins padding)
         {
-            var map = scenario.Map;
             var width = (int)map.width;
             var height = (int)map.height;
             var doodads = new List<DoodadData>();
@@ -44,7 +44,7 @@ namespace ScenarioConverter
                         {
                             TypeId = treeType,
                             Variation = rnd.Next(tileType == AoeTerrainType.PineForest ? 5 : 10),
-                            Position = 128f * new Vector3(x, y, 0f),
+                            Position = 128f * new Vector3(x - padding.Left, y - padding.Bottom, 0f),
                             Rotation = 0f,
                             Scale = Vector3.One,
                             CreationNumber = doodads.Count,

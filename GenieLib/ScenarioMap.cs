@@ -62,17 +62,12 @@ namespace GenieLib
             {
                 for (uint y = 0; y < height; y++)
                 {
-                    if (x < padleft || x >= padright || y < padbottom || y >= padtop)
-                    {
-                        map.terrain[x, y].cnst = AoeTerrainType.Undefined;
-                        map.terrain[x, y].elev = 1;
-                    }
-                    else
-                    {
-                        var originalTile = terrain[x - padleft, y - padbottom];
-                        map.terrain[x, y].cnst = originalTile.cnst;
-                        map.terrain[x, y].elev = originalTile.elev;
-                    }
+                    var i = x < padleft ? 0 : x >= padright ? this.width - 1 : x - padleft;
+                    var j = y < padbottom ? 0 : y >= padtop ? this.height - 1 : y - padbottom;
+
+                    var originalTile = terrain[i, j];
+                    map.terrain[x, y].cnst = originalTile.cnst;
+                    map.terrain[x, y].elev = originalTile.elev;
                 }
             }
 

@@ -39,9 +39,7 @@ namespace ScenarioConverter
                 graphics.DrawImage(minimap, 0, 0, 256, 256);
             }
 
-            var mapEnvironment = MapEnvironmentGenerator.Generate(expandedMap);
-            mapEnvironment.Left = padding.Left * -128;
-            mapEnvironment.Bottom = padding.Bottom * -128;
+            var mapEnvironment = MapEnvironmentGenerator.Generate(expandedMap, padding);
 
             Directory.CreateDirectory(outputFolder);
 
@@ -69,7 +67,7 @@ namespace ScenarioConverter
             using var mapUnitsWriter = new BinaryWriter(mapUnitsStream);
             mapUnitsWriter.Write(mapUnits);
 
-            var mapDoodads = MapDoodadsGenerator.Generate(scenario);
+            var mapDoodads = MapDoodadsGenerator.Generate(expandedMap, padding);
             using var mapDoodadsStream = File.Create(Path.Combine(outputFolder, MapDoodads.FileName));
             using var mapDoodadsWriter = new BinaryWriter(mapDoodadsStream);
             mapDoodadsWriter.Write(mapDoodads);
